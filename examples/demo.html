@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>NGateCore Demo</title>
+  <script src="../dist/ngatecore.umd.js"></script>
+  <style>
+    .demo { margin: 1em; padding: 1em; border: 1px solid #ccc; }
+    .highlight { background: yellow; }
+  </style>
+</head>
+<body>
+  <h1>NGateCore – Exemplo Exaustivo</h1>
+
+  <section>
+    <h2>Seleção e Manipulação de DOM</h2>
+    <div id="dom1" class="demo">DOM 1</div>
+    <div id="dom2" class="demo">DOM 2</div>
+    <button id="btnClass">Toggle Classe</button>
+    <button id="btnAttr">Setar Atributo</button>
+    <button id="btnHtml">Alterar HTML</button>
+    <button id="btnText">Alterar Texto</button>
+    <button id="btnStyle">Alterar CSS</button>
+    <button id="btnClone">Clonar</button>
+    <button id="btnRemove">Remover</button>
+    <div id="cloneTarget"></div>
+  </section>
+
+  <section>
+    <h2>Eventos</h2>
+    <button id="btnOn">Clique (on)</button>
+    <button id="btnOne">Clique uma vez (one)</button>
+    <button id="btnDelegate">Delegação (ul)</button>
+    <ul id="listEvt" class="demo"><li>Item 1</li><li>Item 2</li></ul>
+    <input id="inputKey" placeholder="Digite e pressione Enter" />
+  </section>
+
+  <section>
+    <h2>Animação</h2>
+    <div id="animBox" class="demo" style="width:100px;height:100px;background:#eee;">Animar</div>
+    <button id="btnFade">Fade</button>
+    <button id="btnSlide">Slide</button>
+    <button id="btnPulse">Pulse</button>
+    <button id="btnShake">Shake</button>
+    <button id="btnShowHide">Show/Hide</button>
+  </section>
+
+  <section>
+    <h2>AJAX</h2>
+    <button id="btnAjax">Fazer AJAX</button>
+    <button id="btnGet">GET</button>
+    <button id="btnPost">POST</button>
+    <button id="btnGetJSON">getJSON</button>
+    <pre id="ajaxResult"></pre>
+  </section>
+
+  <section>
+    <h2>Utilitários</h2>
+    <button id="btnUtils">Testar Utils</button>
+    <pre id="utilsResult"></pre>
+  </section>
+
+  <section>
+    <h2>Exemplos Avançados</h2>
+    <div id="adv-list" class="demo">
+      <button id="btnAddItem">Adicionar Item</button>
+      <ul id="ulAdv"></ul>
+    </div>
+    <button id="btnFire">Disparar Evento Customizado</button>
+    <button id="btnDebounce">Clique rápido (debounce)</button>
+    <button id="btnThrottle">Clique rápido (throttle)</button>
+    <button id="btnOnceDelegate">Clique em LI (onceDelegate)</button>
+    <button id="btnEventPath">Mostrar eventPath</button>
+    <button id="btnData">Manipular data-*</button>
+    <button id="btnParents">Mostrar pais</button>
+    <button id="btnSiblings">Mostrar irmãos</button>
+    <pre id="advResult"></pre>
+  </section>
+
+  <script>
+    // Seleção e Manipulação de DOM
+    $NG('#btnClass').on('click', function() {
+      $NG('.demo').toggleClass('highlight');
+    });
+    $NG('#btnAttr').on('click', function() {
+      $NG('#dom1').attr('data-test', 'ok');
+      alert('Atributo data-test: ' + $NG('#dom1').attr('data-test'));
+    });
+    $NG('#btnHtml').on('click', function() {
+      $NG('#dom2').html('<b>HTML alterado!</b>');
+    });
+    $NG('#btnText').on('click', function() {
+      $NG('#dom2').text('Texto alterado!');
+    });
+    $NG('#btnStyle').on('click', function() {
+      $NG('#dom1').css({ color: 'red', fontWeight: 'bold' });
+    });
+    $NG('#btnClone').on('click', function() {
+      var clone = $NG('#dom1').clone().get(0);
+      $NG('#cloneTarget').append(clone);
+    });
+    $NG('#btnRemove').on('click', function() {
+      $NG('#dom2').remove();
+    });
+
+    // Eventos
+    $NG('#btnOn').on('click', function() {
+      alert('Evento on!');
+    });
+    $NG('#btnOne').one('click', function() {
+      alert('Só uma vez!');
+    });
+    $NG('#listEvt').delegate('li', 'click', function() {
+      alert('Delegado: ' + this.textContent);
+    });
+    $NG('#inputKey').onKey('Enter', function() {
+      alert('Enter pressionado: ' + this.value);
+    });
+
+    // Animação
+    $NG('#btnFade').on('click', function() {
+      $NG('#animBox').fadeToggle(400);
+    });
+    $NG('#btnSlide').on('click', function() {
+      $NG('#animBox').slideToggle(400);
+    });
+    $NG('#btnPulse').on('click', function() {
+      $NG('#animBox').pulse(400);
+    });
+    $NG('#btnShake').on('click', function() {
+      $NG('#animBox').shake(400);
+    });
+    $NG('#btnShowHide').on('click', function() {
+      var box = $NG('#animBox');
+      if (box.css('display') === 'none') box.show(400);
+      else box.hide(400);
+    });
+
+    // AJAX
+    $NG('#btnAjax').on('click', function() {
+      $NG.ajax({ url: 'https://jsonplaceholder.typicode.com/todos/1', success: function(data) {
+        $NG('#ajaxResult').text(JSON.stringify(data, null, 2));
+      }});
+    });
+    $NG('#btnGet').on('click', function() {
+      $NG.get('https://jsonplaceholder.typicode.com/todos/2', function(data) {
+        $NG('#ajaxResult').text(JSON.stringify(data, null, 2));
+      });
+    });
+    $NG('#btnPost').on('click', function() {
+      $NG.post('https://jsonplaceholder.typicode.com/posts', { title: 'foo', body: 'bar', userId: 1 }, function(data) {
+        $NG('#ajaxResult').text(JSON.stringify(data, null, 2));
+      });
+    });
+    $NG('#btnGetJSON').on('click', function() {
+      $NG.getJSON('https://jsonplaceholder.typicode.com/todos/3', function(data) {
+        $NG('#ajaxResult').text(JSON.stringify(data, null, 2));
+      });
+    });
+
+    // Utilitários
+    $NG('#btnUtils').on('click', function() {
+      var arr = [1,2,2,3];
+      var obj = { a: 1 };
+      var res = [];
+      res.push('isArray: ' + $NG.utils.isArray(arr));
+      res.push('isObject: ' + $NG.utils.isObject(obj));
+      res.push('isString: ' + $NG.utils.isString('abc'));
+      res.push('isNumber: ' + $NG.utils.isNumber(123));
+      res.push('unique: ' + JSON.stringify($NG.utils.unique(arr)));
+      res.push('guid: ' + $NG.utils.guid());
+      $NG('#utilsResult').text(res.join('\n'));
+    });
+
+    // Exemplo de uso estático
+    window.NGStatic = $NG;
+    // Exemplo: NGStatic.html(document.getElementById('dom1'), 'Alterado via estático!');
+
+    // Delegação dinâmica e onceDelegate
+    $NG('#btnAddItem').on('click', function() {
+      var ul = $NG('#ulAdv');
+      var li = document.createElement('li');
+      li.textContent = 'Item ' + (ul.children().toArray().length + 1);
+      ul.append(li);
+    });
+    $NG('#ulAdv').onceDelegate('li', 'click', function() {
+      $NG('#advResult').text('Primeiro clique em LI: ' + this.textContent);
+    });
+    // Encadeamento avançado
+    $NG('#ulAdv').on('click', 'li', function() {
+      $NG(this).addClass('highlight').fadeOut(300, function() {
+        $NG(this).remove();
+      });
+    });
+    // Evento customizado
+    $NG('#btnFire').on('click', function() {
+      $NG.fire('#ulAdv', 'meuEvento', { foo: 123 });
+    });
+    $NG('#ulAdv').on('meuEvento', function(e) {
+      $NG('#advResult').text('Evento customizado recebido! detail.foo=' + e.detail.foo);
+    });
+    // Debounce
+    $NG('#btnDebounce').onDebounce('click', function() {
+      $NG('#advResult').text('Debounce: só aparece se parar de clicar!');
+    }, 500);
+    // Throttle
+    $NG('#btnThrottle').onThrottle('click', function() {
+      $NG('#advResult').text('Throttle: só 1x a cada 1s!');
+    }, 1000);
+    // eventPath
+    $NG('#btnEventPath').on('click', function(e) {
+      var path = $NG.eventPath(e).map(function(el) { return el.tagName; }).join(' > ');
+      $NG('#advResult').text('eventPath: ' + path);
+    });
+    // Manipulação de data-*
+    $NG('#btnData').on('click', function() {
+      var el = document.createElement('div');
+      $NG.data(el, 'foo', 'bar');
+      $NG('#advResult').text('data-foo: ' + $NG.data(el, 'foo'));
+    });
+    // Mostrar pais
+    $NG('#btnParents').on('click', function() {
+      var el = document.getElementById('ulAdv');
+      var parents = $NG.parents(el).map(function(p) { return p.tagName; }).join(' > ');
+      $NG('#advResult').text('Pais: ' + parents);
+    });
+    // Mostrar irmãos
+    $NG('#btnSiblings').on('click', function() {
+      var el = document.getElementById('ulAdv');
+      var siblings = $NG.siblings(el).map(function(s) { return s.tagName; }).join(', ');
+      $NG('#advResult').text('Irmãos: ' + siblings);
+    });
+    // Utilitários avançados
+    // debounce/throttle direto
+    var debounced = $NG.utils.debounce(function() {
+      $NG('#advResult').text('Debounced utilitário!');
+    }, 400);
+    var throttled = $NG.utils.throttle(function() {
+      $NG('#advResult').text('Throttled utilitário!');
+    }, 800);
+    $NG('#btnDebounce').on('dblclick', debounced);
+    $NG('#btnThrottle').on('dblclick', throttled);
+    // unique, guid, extend
+    var arr = [1,2,2,3,3,4];
+    var obj1 = { a: 1 };
+    var obj2 = { b: 2 };
+    $NG('#advResult').text(
+      'unique: ' + JSON.stringify($NG.utils.unique(arr)) + '\n' +
+      'guid: ' + $NG.utils.guid() + '\n' +
+      'extend: ' + JSON.stringify($NG.utils.extend({}, obj1, obj2))
+    );
+    // AJAX avançado: setup e prefilter
+    $NG.ajaxSetup({ headers: { 'X-Test': 'ok' } });
+    $NG.ajaxPrefilter(function(options) {
+      if (options.url.includes('forbidden')) return false;
+      options.headers['X-Prefilter'] = 'yes';
+      return options;
+    });
+    // Teste de erro AJAX
+    $NG.ajax({ url: 'https://jsonplaceholder.typicode.com/forbidden', error: function() {
+      $NG('#advResult').text('Erro AJAX bloqueado pelo prefilter!');
+    }});
+  </script>
+</body>
+</html>

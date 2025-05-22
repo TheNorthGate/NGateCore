@@ -1,0 +1,41 @@
+# Node
+node_modules/
+
+# Build
+/dist/
+*.log
+*.tmp
+
+# Testes e relatórios
+test/performance/advanced/*.log
+test/performance/*.log
+coverage/
+
+# Configs e IDE
+.vscode/
+.DS_Store
+.env
+*.swp
+
+# Outros
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Arquivos temporários do sistema
+*.sublime-workspace
+*.sublime-project
+.idea/
+*.iml
+
+# Arquivos de benchmark temporários
+benchmark.html
+
+# Arquivos de cache
+.cache/
+
+# Arquivos pessoais
+*.pem
+*.p12
+*.key
+*.crt
