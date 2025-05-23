@@ -1,6 +1,6 @@
 {
   "name": "ngatecore",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Biblioteca JavaScript leve, modular e de alta performance para manipulação de DOM, eventos, animações e AJAX, com API encadeável e compatibilidade cross-browser.",
   "main": "dist/ngatecore.umd.js",
   "module": "dist/ngatecore.esm.js",
