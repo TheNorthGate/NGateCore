@@ -321,17 +321,43 @@ export function pulse(el, duration, callback) {
 export function shake(el, duration, callback) {
   const elems = Array.isArray(el) ? el : [el];
   elems.forEach(e => {
-    const original = e.style.transform;
-    let i = 0;
-    function doShake() {
-      if (i++ < 10) {
-        e.style.transform = 'translateX(' + (i % 2 === 0 ? 5 : -5) + 'px)';
-        setTimeout(doShake, duration / 10);
-      } else {
-        e.style.transform = original;
-        if (callback) callback.call(e);
+    const originalTransform = e.style.transform;
+    const stepDuration = duration / 10;
+    let startTime = null;
+    let lastStep = -1;
+
+    function animationStep(currentTime) {
+      if (startTime === null) {
+        startTime = currentTime;
       }
+
+      const elapsed = currentTime - startTime;
+      const currentStep = Math.floor(elapsed / stepDuration);
+
+      if (elapsed >= duration) {
+        e.style.transform = originalTransform;
+        if (typeof callback === 'function') {
+          callback.call(e);
+        }
+        return;
+      }
+
+      if (currentStep > lastStep && currentStep < 10) {
+        // The shake effect applies translateX based on whether the step is even or odd.
+        // Original logic: i % 2 === 0 ? 5 : -5.
+        // For currentStep (0-indexed):
+        // Step 0 (i=1): odd i -> -5px
+        // Step 1 (i=2): even i -> 5px
+        // ...
+        // So, for currentStep: (currentStep + 1) % 2 === 0 ? 5 : -5
+        // Which simplifies to: currentStep % 2 !== 0 ? 5 : -5
+        e.style.transform = 'translateX(' + (currentStep % 2 !== 0 ? 5 : -5) + 'px)';
+        lastStep = currentStep;
+      }
+      
+      requestAnimationFrame(animationStep);
     }
-    doShake();
+
+    requestAnimationFrame(animationStep);
   });
 }
